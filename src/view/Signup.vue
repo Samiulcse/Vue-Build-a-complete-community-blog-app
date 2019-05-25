@@ -49,8 +49,11 @@ export default {
                 email:this.email,
                 password:this.password,
             })
-            .then(response=>{
-                console.log(response);
+            .then( response =>{
+                const data = response.data.data;
+                localStorage.setItem('auth',JSON.stringify(data));
+                this.$root.auth = data;
+                console.log(data);
             })
             .catch(({ response })=>{
                  console.log(response);
