@@ -18,14 +18,14 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authUser">
             <router-link class="nav-link" to="/login">Login</router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authUser">
             <router-link class="nav-link" to="/signup">Signup</router-link>
           </li>
 
-          <!-- <li class="nav-item dropdown">
+          <li class="nav-item dropdown" v-if="authUser">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -34,11 +34,11 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >Hey Samiul</a>
+            >Hey {{authUser.name }}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="#">Logout</a>
             </div>
-          </li> -->
+          </li>
 
           
         </ul>
@@ -46,3 +46,13 @@
     </div>
   </nav>
 </template>
+
+<script>
+export default {
+  computed:{
+    authUser(){
+      return this.$root.auth.user;
+    }
+  }
+}
+</script>
