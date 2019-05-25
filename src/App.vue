@@ -1,31 +1,32 @@
 <template>
   <div id="app">
     <Navbar/>
-    <router-view></router-view>
+    <div class="container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
-
-import Navbar from "@/components/Navbar"
+import Navbar from "@/components/Navbar";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     Navbar
   }
-}
+};
 </script>
 
 <style>
-  *{
-    font-family: 'Poppins', sans-serif;
-    border-radius: 0px !important;
-  }
+* {
+  font-family: "Poppins", sans-serif;
+  border-radius: 0px !important;
+}
 
-  body{
-    background-color: #f5f3ef;
-  }
+body {
+  background-color: #f5f3ef;
+}
 </style>
 
 
