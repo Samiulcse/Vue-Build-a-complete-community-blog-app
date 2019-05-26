@@ -1,11 +1,7 @@
 <template>
   <div class="row my-5" v-if="articles.data">
-    <div
-      class="col-md-8 offset-md-2"
-      v-for="article in articles.data"
-      :key="article.id"
-    >
-    <Article />
+    <div class="col-md-8 offset-md-2" v-for="article in articles.data" :key="article.id">
+      <Article :article="article"/>
     </div>
   </div>
 </template>
@@ -25,8 +21,8 @@ export default {
     next();
   },
 
-  components:{
-      Article
+  components: {
+    Article
   },
 
   mounted() {
