@@ -6,7 +6,7 @@
         <div class="card-body">
            <div class="my-3" v-html=" article.content.substring(0,200)"></div>
 
-            <router-link :to="`/article/${article.id}`" class=" btn btn-primary">Read More</router-link>
+            <router-link :to="`/article/${article.slug}`" class=" btn btn-primary">Read More</router-link>
         </div>
     </div>
 </template>
