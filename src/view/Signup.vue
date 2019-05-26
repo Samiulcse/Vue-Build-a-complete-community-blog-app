@@ -45,7 +45,11 @@
           </div>
 
           <div class="form-group">
-            <button @click="registerUser()" :disabled="loading" class="btn btn-success text-center form-control">
+            <button
+              @click="registerUser()"
+              :disabled="loading"
+              class="btn btn-success text-center form-control"
+            >
               <i class="fas fa-spin fa-spinner" v-if="loading"></i>
               {{ loading ? '':'SignUp' }}
             </button>
@@ -95,6 +99,8 @@ export default {
           this.errors = response.data;
         });
     }
+
+    
   }
 };
 </script>
