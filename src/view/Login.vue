@@ -48,6 +48,7 @@
 
 <script>
 import Axios from "axios";
+import config from "@/config";
 
 export default {
 
@@ -73,7 +74,7 @@ export default {
   methods: {
     loginUser() {
       this.loading = true;
-      Axios.post("https://react-blog-api.bahdcasts.com/api/auth/login", {
+      Axios.post(`${config.apiUrl}/auth/login`, {
         email: this.email,
         password: this.password
       })

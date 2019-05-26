@@ -59,6 +59,7 @@ export default {
     logout(){
       localStorage.removeItem('auth');
       this.$root.auth ={};
+      this.$router.push("/login");
       this.$noty.success("Logout Successfully");
     }
   },
