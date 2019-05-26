@@ -7,6 +7,7 @@ import Router from "vue-router"
 import Login from "./view/Login.vue"
 import Signup from "./view/Signup.vue"
 import Home from "./view/Home.vue"
+import Article from "./view/Article.vue"
 
 
 Vue.use(Router)
@@ -26,6 +27,10 @@ const router = new Router({
     {
         path: '/',
         component: Home
+    },
+    {
+        path: '/article/:id',
+        component: Article
     }
     ]
 
