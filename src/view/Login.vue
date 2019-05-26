@@ -68,20 +68,23 @@ export default {
         password: this.password
       })
         .then(response => {
+          this.$noty.success("Login Successfully");
           this.loading = false;
           this.submitted = true;
           const data = response.data.data;
           localStorage.setItem("auth", JSON.stringify(data));
           this.$root.auth = data;
 
-          this.$router.push("home");
+          this.$router.push("/");
         })
         .catch(({ response }) => {
-          if(response.status == 401){
+          // Error message
+          this.$noty.error("Oops, something went wrong!");
+          if (response.status == 401) {
             this.errors = {
-              email: ['These Credentials does not match our record']
-            }
-          }else{
+              email: ["These Credentials does not match our record"]
+            };
+          } else {
             this.errors = response.data;
           }
           this.loading = false;

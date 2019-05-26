@@ -85,22 +85,23 @@ export default {
         password: this.password
       })
         .then(response => {
+          // Success notification
+          this.$noty.success("Signup Successfully");
           this.loading = false;
           this.submitted = true;
           const data = response.data.data;
           localStorage.setItem("auth", JSON.stringify(data));
           this.$root.auth = data;
 
-          this.$router.push("home");
+          this.$router.push("/");
         })
         .catch(({ response }) => {
+          this.$noty.error("Oops, something went wrong!");
           this.loading = false;
           this.submitted = true;
           this.errors = response.data;
         });
     }
-
-    
   }
 };
 </script>
