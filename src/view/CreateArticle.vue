@@ -13,19 +13,23 @@
 
             <select class="form-control mt-3" v-model="category">
               <option selected>Select a category</option>
-              <option :value="category.id" v-for="(category,index) in categories" :key="index">
-                {{ category.name }}
-              </option>
+              <option
+                :value="category.id"
+                v-for="(category,index) in categories"
+                :key="index"
+              >{{ category.name }}</option>
             </select>
 
-            <input type="text" placeholder="Title" class="my-3 form-control">
+            <input type="text" v-model="title" placeholder="Title" class="my-3 form-control">
 
             <wysiwyg v-model="content"/>
 
             <div class="text-center">
-              <button @click="createArticle()" class="btn btn-lg btn-success mt-3">Create Article</button>
+              <button :disabled="loading" @click="createArticle()" class="btn btn-lg btn-success mt-3">
+                <i class="fas fa-spin fa-spinner" v-if="loading"></i>
+                {{ loading ? '': 'Create Article' }}
+              </button>
             </div>
-
           </div>
         </div>
       </div>
@@ -35,8 +39,8 @@
 
 <script>
 import Axios from "axios";
-import PictureInput from "vue-picture-input"
-import config from "@/config"
+import PictureInput from "vue-picture-input";
+import config from "@/config";
 import { constants } from "crypto";
 
 export default {
@@ -48,7 +52,7 @@ export default {
     next();
   },
 
-  mounted(){
+  mounted() {
     this.getCategories();
   },
 
@@ -58,10 +62,12 @@ export default {
 
   data() {
     return {
+      title:'',
       content: "",
       image: null,
       categories: [],
-      category: ''
+      category: "",
+      loading: false
     };
   },
 
@@ -71,38 +77,61 @@ export default {
     },
 
     createArticle() {
+      if(!this.title || !this.content || !this.image || !this.category){
+        this.$noty.error('Please fillout all field');
+        return;
+      }
+
+
+      this.loading = true;
       const form = new FormData();
 
       form.append("file", this.image);
-      form.append("upload_preset", process.env.VUE_APP_CLOUDINARY_PRESET );
-      form.append("api_key",process.env.VUE_APP_CLOUDINARY_API_KEY);
+      form.append("upload_preset", process.env.VUE_APP_CLOUDINARY_PRESET);
+      form.append("api_key", process.env.VUE_APP_CLOUDINARY_API_KEY);
 
-      Axios.post(
-        process.env.VUE_APP_CLOUDINARY_URL,
-        form
-      ).then(res => {
-        console.log(res);
-      });
+      Axios.post(process.env.VUE_APP_CLOUDINARY_URL, form)
+        .then(res => {
+          Axios.post(`${config.apiUrl}/articles`, {
+            title: this.title,
+            content: this.content,
+            category_id: this.category,
+            imageUrl: res.data.secure_url
+          },{
+            headers:{
+              Authorization: `Bearer ${this.$root.auth.token}`
+            }
+          })
+            .then(() => {
+              this.loading = false;
+              this.$noty.success("Article Created Successfully");
+              this.$router.push('/')
+            })
+            .catch(() => {
+              this.loading = false;
+              this.$noty.error("Something going wrong!");
+            });
+        })
+        .catch(() => {
+          this.loading = false;
+          this.$noty.error("Something going wrong!");
+        });
     },
 
+    getCategories() {
+      const categories = localStorage.getItem("categories");
 
-    getCategories(){
-
-      const categories = localStorage.getItem('categories');
-
-      if(categories){
-
+      if (categories) {
         this.categories = JSON.parse(categories);
 
         return;
       }
 
-
-      Axios.get(`${config.apiUrl}/categories`).then(res=>{
+      Axios.get(`${config.apiUrl}/categories`).then(res => {
         this.categories = res.data.categories;
 
-        localStorage.setItem('categories', JSON.stringify(this.categories));
-      })
+        localStorage.setItem("categories", JSON.stringify(this.categories));
+      });
     }
   }
 };
