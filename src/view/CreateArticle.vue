@@ -10,11 +10,22 @@
               button-class="btn btn-danger"
               @change="onChange"
             ></picture-input>
+
+            <select class="form-control mt-3" v-model="category">
+              <option selected>Select a category</option>
+              <option :value="category.id" v-for="(category,index) in categories" :key="index">
+                {{ category.name }}
+              </option>
+            </select>
+
             <input type="text" placeholder="Title" class="my-3 form-control">
+
             <wysiwyg v-model="content"/>
+
             <div class="text-center">
               <button @click="createArticle()" class="btn btn-lg btn-success mt-3">Create Article</button>
             </div>
+
           </div>
         </div>
       </div>
@@ -24,7 +35,8 @@
 
 <script>
 import Axios from "axios";
-import PictureInput from "vue-picture-input";
+import PictureInput from "vue-picture-input"
+import config from "@/config"
 import { constants } from "crypto";
 
 export default {
@@ -36,6 +48,10 @@ export default {
     next();
   },
 
+  mounted(){
+    this.getCategories();
+  },
+
   components: {
     PictureInput
   },
@@ -43,7 +59,9 @@ export default {
   data() {
     return {
       content: "",
-      image: null
+      image: null,
+      categories: [],
+      category: ''
     };
   },
 
@@ -65,6 +83,26 @@ export default {
       ).then(res => {
         console.log(res);
       });
+    },
+
+
+    getCategories(){
+
+      const categories = localStorage.getItem('categories');
+
+      if(categories){
+
+        this.categories = JSON.parse(categories);
+
+        return;
+      }
+
+
+      Axios.get(`${config.apiUrl}/categories`).then(res=>{
+        this.categories = res.data.categories;
+
+        localStorage.setItem('categories', JSON.stringify(this.categories));
+      })
     }
   }
 };
