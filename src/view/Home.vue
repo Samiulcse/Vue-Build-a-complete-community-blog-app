@@ -1,8 +1,28 @@
 <template>
-  <div class="row my-5" v-if="articles.data">
-    <div class="col-md-8 offset-md-2" v-for="(article, index) in articles.data" :key="index">
-      <Article :article="article"/>
+  <div class="my-5">
+    <div class="d-flex justify-content-between">
+      <button
+        @click="getPreviousArticles()"
+        :disabled="articles.prev_page_url == null"
+        class="btn btn-warning"
+      >Previous Page</button>
+      <button
+        @click="getNextArticles()"
+        :disabled="articles.next_page_url == null"
+        class="btn btn-warning"
+      >Next Page</button>
     </div>
+
+    <div class="row my-3" v-if="!loading">
+      <div class="col-md-8 offset-md-2" v-for="(article, index) in articles.data" :key="index">
+        <Article :article="article"/>
+      </div>
+    </div>
+
+    <div class="loader text-center" v-else>
+      <i class="fas fa-5x fa-spin fa-spinner"></i>
+    </div>
+    
   </div>
 </template>
 
@@ -31,16 +51,37 @@ export default {
 
   data() {
     return {
-      articles: {}
+      articles: {},
+      loading: true
     };
   },
 
   methods: {
-    getArticles() {
-      Axios.get(`${config.apiUrl}/articles`).then(response => {
+    getArticles(url = `${config.apiUrl}/articles`) {
+      this.loading = true;
+
+      Axios.get(url).then(response => {
+        this.loading = false;
         this.articles = response.data.data;
       });
+    },
+
+    getPreviousArticles() {
+      this.getArticles(this.articles.prev_page_url);
+    },
+
+    getNextArticles() {
+      this.getArticles(this.articles.next_page_url);
     }
   }
 };
 </script>
+
+<style>
+.btn-warning {
+  color: #ffffff;
+}
+.btn-warning:hover {
+  color: #ffffff;
+}
+</style>
